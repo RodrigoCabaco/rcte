@@ -1,0 +1,38 @@
+import modules
+import filestream
+import threading
+import headers
+import handlers
+
+headers()
+#suppress_errors()
+function read_key(){
+    str f >>$readkey
+    if str(f==UP); "upif";{
+        handlers.up()
+    }upif;
+    if str(f==RIGHT); "rightif";{
+        handlers.right()
+    }rightif;
+    if str(f==LEFT); "leftif";{
+        handlers.left()
+    }leftif;
+    if str(f==DOWN); "downif";{
+        handlers.down()
+    }downif;
+    if str(f==ESC); "escif";{
+        handlers.esc()
+    }escif;
+}read_key;
+
+function main(){
+    str file_to_read >>arg1
+    modules.readfile()
+    str to_edit >>file_to_read
+    str edited >>to_edit
+    read_key()
+}main;
+
+main()
+newln
+exit()
