@@ -2,13 +2,34 @@ include "headers.h.rcode"
 import filestream
 import split
 useful_defines()
+#keep track of each keystroke
 
 function run_command(str command) => {
     if str(command=="line");{
         clear()
         Write "Enter Line: "
         num line = readline()
+        str _edit_str_current = ""
+        for k in range:line;{
+            str _edit_str_current_line = ""
+            getSplit from:_edit_str; to:_edit_str_current_line; index:k; separator:line_break;
+            str(_edit_str_current+_edit_str_current_line)
+            str(_edit_str_current+line_break)
+        };
+        clear()
+
+        count_lines(str to_count =_edit_str_current)
+        write_to_screen(str to_write =_edit_str_current;;num lines =lines)
         cursor_y >>line
+    };
+    if str(command=="exit");{
+        clear()
+        exit()
+    };
+    if str(command=="save");{
+        clear()
+        DeleteFile file:to_edit;
+        WriteToFile file:to_edit; content:_edit_str
     };
 };
 
@@ -59,13 +80,38 @@ function main_loop() => {
     };
 };
 
+function write_to_screen(str to_write, num lines) => {
+    for f in range:lines;
+    {
+        str current_line_to_write = ""
+        getSplit from:to_write; to:current_line_to_write; index:f; separator:line_break;
+        WriteNum {f}
+        Write " "
+        WriteStr {current_line_to_write}
+        newln
+    };
+};
+
+function count_lines(str to_count); => {
+    list(str) "char_edit_str"
+    list(str).ToCharArray:to_count; to:char_edit_str;
+    float lines = 0
+    for _line in range:char_edit_str.length;{
+        slval(char_edit_str[_line])
+        if str(char_edit_str[_line]==line_break);{
+            ++lines;
+        };
+    };
+};
+
 function main() => {
     str to_edit =arg1
     str read = ""
     ReadFile file:to_edit; str:_read;
     clear()
     str _edit_str =_read
-    WriteStr {_edit_str}
+    count_lines(str to_count >>_read)
+    write_to_screen(str to_write =_read)
     main_loop()
 };
 main()
