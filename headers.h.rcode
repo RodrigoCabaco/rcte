@@ -1,0 +1,151 @@
+import pixel
+import split
+#Headers rC
+#Made in rC - github.com/RodrigoCabaco/rC
+#Author - Rodrigo Cabaço
+#A list of useful defines
+#Pretty understandable
+str lowered_cases >>"abcdefghijklmnopqrstuvwxyz"
+str upper_cases >>"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+list(str) "upper_cases_list"
+list(str) "lowered_cases_list"
+list(str) "string_list"
+list(str).ToCharArray:lowered_cases; to:lowered_cases_list;
+list(str).ToCharArray:upper_cases; to:upper_cases_list;
+function useful_defines(); => {
+    define "slval(":"getStrListValue("
+    define "nlval(":"getNumListValue("
+    define "uslval(":"updateStrListValue("
+    define "unlval(":"updateNumListValue("
+    define " =":" >>"
+    define "float ":"num "
+    define "float(":"num("
+    define "string ":"str "
+    define "string(":"str("
+    define "func ":"function "
+    define " readline()":"$readline"
+    define " readkey()":"$readkey"
+};
+
+
+# Define stuff to make the syntax look more like python3
+# num f >>0 : float f = 0
+# note that num f >>0 will still work
+function python_define(); => {
+    define "def ":"function "
+    define "float ":"num "
+    define " =":" >>"
+    define "print(":"Write "
+    define "printNum " : "WriteNum "
+    define "printStr " : "WriteStr "
+};
+
+function draw_char(num x, num y, str char, str color); => {
+    suppress_errors()
+    pixel.drawchar x:x; y:y; color:$color$; char:$char$
+};
+function draw_color(num x, num y, str color); => {
+    suppress_errors()
+    pixel.draw x:x; y:y; color:$color$;
+};
+
+# Returns upper string assigned to "to_upper"
+# Returns upper_cased
+function upper(str to_upper); => {
+    for i in range:string_list.length;{
+        suppress_errors()
+        string_list.RemoveAt(0)
+    };
+    list(str).ToCharArray:to_upper; to:string_list;
+    str upper_cased >>""
+    for f in range:string_list.length;{
+        num ind >>0
+        getStrListValue(string_list[f])
+        lowered_cases_list.IndexOf:string_list[f]; to:ind;
+        if num(ind!=-1);{
+            getStrListValue(upper_cases_list[ind])
+            str(upper_cased+upper_cases_list[ind])
+        };
+        if num(ind==-1);{
+            str(upper_cased+string_list[f])
+        };
+    };
+    return upper_cased;
+};
+
+function clear() => {
+    clear
+};
+
+function print_str_list(str list_name) => {
+    Write "["
+    str quote >>""
+    str(quote+")
+    str final >>""
+    num len >>$list_name$.length
+    for i in range:len; {
+        getStrListValue($list_name$[i])
+        str(final+quote)
+        str(final+$list_name$[i])
+        str(final+quote)
+        ;;num len_1 >>$list_name$.length;;--len_1
+        if num(len_1!=i);{
+            str(final+,)
+        };
+    };
+    WriteStr {final}
+    Write "]"
+    return final;
+
+};
+function print_num_list(str list_name) => {
+    Write "["
+    str quote >>""
+    str final >>""
+    str(quote+")
+    num len >>$list_name$.length
+    for i in range:len; {
+        getNumListValue($list_name$[i])
+        numToStr($list_name$[i])
+        str(final+$list_name$[i])
+        ;;num len_1 >>$list_name$.length;;--len_1
+        if num(len_1!=i);{
+            str(final+,)
+        };
+    };
+    WriteStr {final}
+    Write "]"
+};
+
+function pop(str list_name) => {
+    ;;num len_m1 >>$list_name$.length;;--len_m1
+    if num(len_m1+>-1);{
+        $list_name$.RemoveAt(len_m1)
+    };
+};
+function pop_first(str list_name) => {
+    $list_name$.RemoveAt(0)
+};
+
+#Checks if a value is in a list of name "list name"
+# Returns "in_list" (str) -> "True"/"False"
+function in_list(str list_name, str value_to_check);{
+    str in_list >>"False"
+    num ind >>0
+    $list_name$.IndexOf:value_to_check; to:ind;
+    if num(ind!=-1);{
+        str in_list >>"True"
+    };
+};
+
+
+#Reassigns the value to num_name 
+function to_int(str num_name); => {
+    num to_convert >>$num_name$
+    numToStr(to_convert)
+    str parsed >>""
+    getSplit from:to_convert; to:parsed; index:0; separator:".";
+    strToNum(parsed)
+    num $num_name$ >>parsed
+};
+

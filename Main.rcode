@@ -1,38 +1,72 @@
-import modules
+include "headers.h.rcode"
 import filestream
-import threading
-import headers
-import handlers
+import split
+useful_defines()
 
-headers()
-#suppress_errors()
-function read_key(){
-    str f >>$readkey
-    if str(f==UP); "upif";{
-        handlers.up()
-    }upif;
-    if str(f==RIGHT); "rightif";{
-        handlers.right()
-    }rightif;
-    if str(f==LEFT); "leftif";{
-        handlers.left()
-    }leftif;
-    if str(f==DOWN); "downif";{
-        handlers.down()
-    }downif;
-    if str(f==ESC); "escif";{
-        handlers.esc()
-    }escif;
-}read_key;
+function run_command(str command) => {
+    if str(command=="line");{
+        clear()
+        Write "Enter Line: "
+        num line = readline()
+        cursor_y >>line
+    };
+};
 
-function main(){
-    str file_to_read >>arg1
-    modules.readfile()
-    str to_edit >>file_to_read
-    str edited >>to_edit
-    read_key()
-}main;
+function keys() => {
+    str i = readkey()
+    if str(i=="LeftArrow");{
+        num f >>cursor_x
+        --f;
+        cursor_x >>f
+    };
+    if str(i=="RightArrow");{
+        num k >>cursor_y
+        num f >>cursor_x
+        ++f;
+        cursor_x >>f
+        cursor_y >>k
+    };
+    
+    if str(i=="UpArrow");{
+        num k >>cursor_x
+        num f >>cursor_y
+        --f;
+        --k;
+        cursor_y >>f
+        cursor_x >>k
+    };
+    if str(i=="DownArrow");{
+        num k >>cursor_x
+        num f >>cursor_y
+        ++f;
+        --k;
+        cursor_y >>f
+        cursor_x >>k
+    };
+    if str(i=="Escape");{
+        clear()
+        Write "Enter Command: "
+        str command = readline()
+        run_command(str command >>comand)
+    };
 
+};
+
+function main_loop() => {
+    str True = "True"
+    while str(True=="True");{
+        keys()
+    };
+};
+
+function main() => {
+    str to_edit =arg1
+    str read = ""
+    ReadFile file:to_edit; str:_read;
+    clear()
+    str _edit_str =_read
+    WriteStr {_edit_str}
+    main_loop()
+};
 main()
-newln
 exit()
