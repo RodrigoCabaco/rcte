@@ -3,6 +3,21 @@ import filestream
 import split
 useful_defines()
 #keep track of each keystroke
+# and current line of editing
+#fix line command
+#improve speed
+
+function count_lines(str to_count); => {
+    list(str) "char_edit_str"
+    list(str).ToCharArray:to_count; to:char_edit_str;
+    float lines = 0
+    for _line in range:char_edit_str.length;{
+        slval(char_edit_str[_line])
+        if str(char_edit_str[_line]==line_break);{
+            ++lines;
+        };
+    };
+};
 
 function run_command(str command) => {
     if str(command=="line");{
@@ -17,8 +32,23 @@ function run_command(str command) => {
             str(_edit_str_current+line_break)
         };
         clear()
-
-        count_lines(str to_count =_edit_str_current)
+        str to_count =_edit_str_current
+        list(str) "char_edit_str"
+        clear()
+        for j in range:char_edit_str.length;{
+            char_edit_str.RemoveAt(0)
+            suppress_errors()
+        };
+        clear()
+        list(str).ToCharArray:to_count; to:char_edit_str;
+        float lines = 0
+        for _line_ in range:char_edit_str.length;{
+            slval(char_edit_str[_line_])
+            if str(char_edit_str[_line_]==line_break);{
+                ++lines;
+            };
+        };
+        
         write_to_screen(str to_write =_edit_str_current;;num lines =lines)
         cursor_y >>line
     };
@@ -92,17 +122,7 @@ function write_to_screen(str to_write, num lines) => {
     };
 };
 
-function count_lines(str to_count); => {
-    list(str) "char_edit_str"
-    list(str).ToCharArray:to_count; to:char_edit_str;
-    float lines = 0
-    for _line in range:char_edit_str.length;{
-        slval(char_edit_str[_line])
-        if str(char_edit_str[_line]==line_break);{
-            ++lines;
-        };
-    };
-};
+
 
 function main() => {
     str to_edit =arg1
