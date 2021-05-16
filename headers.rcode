@@ -1,5 +1,0 @@
-str UP >>"UpArrow"
-str DOWN >>"DownArrow"
-str LEFT >>"LeftArrow"
-str RIGHT >>"RightArrow"
-str ESC >>"Escape"
